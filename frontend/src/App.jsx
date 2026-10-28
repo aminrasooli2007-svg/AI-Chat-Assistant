@@ -1,11 +1,11 @@
 
 import { useState } from 'react'
-import { Send, Paperclip } from 'lucide-react'
 import { translations } from './data/translations'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import Welcome from './components/Welcome'
 import MessageList from './components/MessageList'
+import Composer from './components/Composer'
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('nova-theme') || 'dark')
@@ -88,48 +88,12 @@ function App() {
           )}
         </div>
 
-        <div className="composer-area">
-          <form className="composer" onSubmit={handleSend}>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  handleSend(e)
-                }
-              }}
-              placeholder={t.placeholder}
-              rows={1}
-              aria-label={t.writeMessage}
-            />
-
-            <div className="composer-footer">
-              <div className="composer-tools">
-                <button
-                  type="button"
-                  className="composer-tool"
-                  aria-label={t.attach}
-                  title={t.attach}
-                >
-                  <Paperclip size={17} />
-                </button>
-                <span className="composer-hint">{t.hint}</span>
-              </div>
-
-              <button
-                type="submit"
-                className="send-button"
-                disabled={!message.trim()}
-                aria-label={t.writeMessage}
-              >
-                <Send size={17} />
-              </button>
-            </div>
-          </form>
-
-          <p className="disclaimer">{t.disclaimer}</p>
-        </div>
+        <Composer
+          message={message}
+          setMessage={setMessage}
+          onSend={handleSend}
+          t={t}
+        />
       </section>
     </main>
   )
