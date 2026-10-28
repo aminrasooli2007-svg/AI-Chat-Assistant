@@ -1,10 +1,11 @@
 
 import { useState } from 'react'
-import { Bot, Send, Paperclip } from 'lucide-react'
+import { Send, Paperclip } from 'lucide-react'
 import { translations } from './data/translations'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import Welcome from './components/Welcome'
+import MessageList from './components/MessageList'
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('nova-theme') || 'dark')
@@ -81,26 +82,9 @@ function App() {
 
         <div className="chat-content">
           {messages.length === 0 ? (
-            <Welcome
-              t={t}
-              onSelectSuggestion={setMessage}
-            />
+            <Welcome t={t} onSelectSuggestion={setMessage} />
           ) : (
-            <div className="messages-list">
-              {messages.map((item) => (
-                <div className="message-row" key={item.id}>
-                  <span className="message-avatar">A</span>
-                  <p>{item.text}</p>
-                </div>
-              ))}
-
-              <div className="assistant-placeholder">
-                <span className="assistant-avatar">
-                  <Bot size={18} />
-                </span>
-                <p>{t.apiPlaceholder}</p>
-              </div>
-            </div>
+            <MessageList messages={messages} t={t} />
           )}
         </div>
 
