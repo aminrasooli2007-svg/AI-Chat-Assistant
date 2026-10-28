@@ -1,16 +1,9 @@
 
 import { useState } from 'react'
-import {
-  Bot,
-  Sun,
-  Moon,
-  Globe,
-  Send,
-  Paperclip,
-  Menu,
-} from 'lucide-react'
+import { Bot, Send, Paperclip } from 'lucide-react'
 import { translations } from './data/translations'
 import Sidebar from './components/Sidebar'
+import Topbar from './components/Topbar'
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('nova-theme') || 'dark')
@@ -77,45 +70,13 @@ function App() {
       />
 
       <section className="chat-panel">
-        <header className="topbar">
-          <div className="topbar-left">
-            <button
-              className="icon-button mobile-menu"
-              onClick={() => setSidebarOpen(true)}
-              aria-label={t.openSidebar}
-            >
-              <Menu size={20} />
-            </button>
-
-            <div className="model-selector">
-              <span className="status-dot" />
-              <span>{t.assistant}</span>
-              <span className="model-badge">{t.beta}</span>
-            </div>
-          </div>
-
-          <div className="topbar-actions">
-            <button
-              className="icon-button"
-              onClick={toggleLanguage}
-              aria-label={t.language}
-              title={t.language}
-            >
-              <Globe size={18} />
-            </button>
-
-            <button
-              className="icon-button"
-              onClick={toggleTheme}
-              aria-label={t.toggleTheme}
-              title={t.toggleTheme}
-            >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-
-            <button className="share-button">{t.feedback}</button>
-          </div>
-        </header>
+        <Topbar
+          t={t}
+          isDark={isDark}
+          toggleTheme={toggleTheme}
+          toggleLanguage={toggleLanguage}
+          onOpenSidebar={() => setSidebarOpen(true)}
+        />
 
         <div className="chat-content">
           {messages.length === 0 ? (
