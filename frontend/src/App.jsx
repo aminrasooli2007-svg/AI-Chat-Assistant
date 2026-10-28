@@ -1,93 +1,18 @@
 
 import { useState } from 'react'
-import { Bot, Plus, MessageSquare, Sun, Moon, Globe, Send, Paperclip, Menu, X } from 'lucide-react'
-
-const translations = {
-  en: {
-    closeSidebar: 'Close sidebar',
-    openSidebar: 'Open sidebar',
-    home: 'Nova AI home',
-    newChat: 'New chat',
-    workspace: 'YOUR WORKSPACE',
-    chatAssistant: 'Chat assistant',
-    recent: 'RECENT',
-    emptyHistory: 'Your conversations will appear here.',
-    planTitle: 'Make more with Nova',
-    planDescription: 'Explore what AI can do for you.',
-    yourWorkspace: 'Your workspace',
-    freePlan: 'Free plan',
-    assistant: 'Nova Assistant',
-    beta: 'BETA',
-    language: 'Change language',
-    toggleTheme: 'Toggle theme',
-    feedback: 'Share feedback',
-    eyebrow: 'YOUR AI, REIMAGINED',
-    headingFirst: 'Ideas start with',
-    headingSecond: 'a conversation.',
-    descriptionFirst: 'Your thoughtful AI companion for exploring ideas,',
-    descriptionSecond: 'solving problems, and creating something amazing.',
-    brainstorm: 'Brainstorm ideas',
-    brainstormDescription: 'Turn a spark into something great',
-    learn: 'Learn something',
-    learnDescription: 'Make the complex feel simple',
-    code: 'Write some code',
-    codeDescription: 'Build, debug, and improve',
-    plan: 'Plan a project',
-    planDescriptionCard: 'Go from idea to action',
-    suggestionBrainstorm: 'Help me brainstorm a creative project',
-    suggestionLearn: 'Explain a complex topic in simple terms',
-    suggestionCode: 'Help me write clean, readable code',
-    suggestionPlan: 'Help me plan my next big goal',
-    apiPlaceholder: 'Connect an AI API to start receiving responses.',
-    placeholder: 'Ask Nova anything...',
-    writeMessage: 'Write your message',
-    attach: 'Attach a file',
-    hint: 'Be curious. Think bigger.',
-    disclaimer: 'Nova can make mistakes. Check important information.',
-  },
-  fa: {
-    closeSidebar: 'بستن نوار کناری',
-    openSidebar: 'باز کردن نوار کناری',
-    home: 'صفحه اصلی نوا ای‌آی',
-    newChat: 'گفتگوی جدید',
-    workspace: 'فضای کاری شما',
-    chatAssistant: 'دستیار گفتگو',
-    recent: 'گفتگوهای اخیر',
-    emptyHistory: 'گفتگوهای شما اینجا نمایش داده می‌شوند.',
-    planTitle: 'با نوا بیشتر انجام بده',
-    planDescription: 'توانایی‌های هوش مصنوعی را کشف کن.',
-    yourWorkspace: 'فضای کاری شما',
-    freePlan: 'طرح رایگان',
-    assistant: 'دستیار نوا',
-    beta: 'آزمایشی',
-    language: 'تغییر زبان',
-    toggleTheme: 'تغییر تم',
-    feedback: 'ارسال بازخورد',
-    eyebrow: 'هوش مصنوعی، به شکلی تازه',
-    headingFirst: 'ایده‌ها با یک',
-    headingSecond: 'گفتگو آغاز می‌شوند.',
-    descriptionFirst: 'همراه هوشمند شما برای کشف ایده‌ها،',
-    descriptionSecond: 'حل مشکلات و خلق چیزهای شگفت‌انگیز.',
-    brainstorm: 'ایده‌پردازی',
-    brainstormDescription: 'یک جرقه را به ایده‌ای عالی تبدیل کن',
-    learn: 'یادگیری',
-    learnDescription: 'موضوعات پیچیده را ساده یاد بگیر',
-    code: 'برنامه‌نویسی',
-    codeDescription: 'کدنویسی کن، اشکال‌زدایی کن و بهتر بساز',
-    plan: 'برنامه‌ریزی پروژه',
-    planDescriptionCard: 'از ایده تا اجرا پیش برو',
-    suggestionBrainstorm: 'برای یک پروژه خلاقانه ایده‌پردازی کن',
-    suggestionLearn: 'یک موضوع پیچیده را ساده توضیح بده',
-    suggestionCode: 'برایم کدی تمیز و خوانا بنویس',
-    suggestionPlan: 'برای هدف بزرگ بعدی‌ام برنامه‌ریزی کن',
-    apiPlaceholder: 'برای دریافت پاسخ، یک API هوش مصنوعی متصل کن.',
-    placeholder: 'هر چیزی از نوا بپرس...',
-    writeMessage: 'پیام خود را بنویسید',
-    attach: 'پیوست فایل',
-    hint: 'کنجکاو باش و بزرگ‌تر فکر کن.',
-    disclaimer: 'نوا ممکن است اشتباه کند. اطلاعات مهم را بررسی کنید.',
-  },
-}
+import {
+  Bot,
+  Plus,
+  MessageSquare,
+  Sun,
+  Moon,
+  Globe,
+  Send,
+  Paperclip,
+  Menu,
+  X,
+} from 'lucide-react'
+import { translations } from './data/translations'
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('nova-theme') || 'dark')
@@ -115,14 +40,33 @@ function App() {
   function handleSend(e) {
     e.preventDefault()
 
-    if (!message.trim()) return
+    const trimmedMessage = message.trim()
 
-    setMessages((current) => [...current, { id: Date.now(), text: message.trim() }])
+    if (!trimmedMessage) return
+
+    setMessages((current) => [
+      ...current,
+      {
+        id: `${Date.now()}-${current.length}`,
+        text: trimmedMessage,
+      },
+    ])
+
     setMessage('')
   }
 
+  function startNewChat() {
+    setMessages([])
+    setMessage('')
+    setSidebarOpen(false)
+  }
+
   return (
-    <main className={`app ${isDark ? 'dark' : 'light'}`} dir={isPersian ? 'rtl' : 'ltr'} lang={language}>
+    <main
+      className={`app ${isDark ? 'dark' : 'light'}`}
+      dir={isPersian ? 'rtl' : 'ltr'}
+      lang={language}
+    >
       <div className="ambient ambient-one" />
       <div className="ambient ambient-two" />
 
@@ -137,15 +81,24 @@ function App() {
       <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-top">
           <a className="brand" href="#" aria-label={t.home}>
-            <span className="brand-icon"><Bot size={23} /></span>
-            <span>nova<span className="brand-accent">.ai</span></span>
+            <span className="brand-icon">
+              <Bot size={23} />
+            </span>
+            <span>
+              nova<span className="brand-accent">.ai</span>
+            </span>
           </a>
-          <button className="icon-button mobile-close" onClick={() => setSidebarOpen(false)} aria-label={t.closeSidebar}>
+
+          <button
+            className="icon-button mobile-close"
+            onClick={() => setSidebarOpen(false)}
+            aria-label={t.closeSidebar}
+          >
             <X size={19} />
           </button>
         </div>
 
-        <button className="new-chat-button" onClick={() => setMessages([])}>
+        <button className="new-chat-button" onClick={startNewChat}>
           <Plus size={18} />
           <span>{t.newChat}</span>
           <span className="shortcut">⌘ K</span>
@@ -161,6 +114,7 @@ function App() {
 
         <div className="history-section">
           <p className="section-label">{t.recent}</p>
+
           {messages.length === 0 ? (
             <p className="empty-history">{t.emptyHistory}</p>
           ) : (
@@ -179,6 +133,7 @@ function App() {
               <p className="plan-description">{t.planDescription}</p>
             </div>
           </div>
+
           <button className="profile-button">
             <span className="avatar">A</span>
             <span className="profile-info">
@@ -193,22 +148,40 @@ function App() {
       <section className="chat-panel">
         <header className="topbar">
           <div className="topbar-left">
-            <button className="icon-button mobile-menu" onClick={() => setSidebarOpen(true)} aria-label={t.openSidebar}>
+            <button
+              className="icon-button mobile-menu"
+              onClick={() => setSidebarOpen(true)}
+              aria-label={t.openSidebar}
+            >
               <Menu size={20} />
             </button>
+
             <div className="model-selector">
               <span className="status-dot" />
               <span>{t.assistant}</span>
               <span className="model-badge">{t.beta}</span>
             </div>
           </div>
+
           <div className="topbar-actions">
-            <button className="icon-button" onClick={toggleLanguage} aria-label={t.language} title={t.language}>
+            <button
+              className="icon-button"
+              onClick={toggleLanguage}
+              aria-label={t.language}
+              title={t.language}
+            >
               <Globe size={18} />
             </button>
-            <button className="icon-button" onClick={toggleTheme} aria-label={t.toggleTheme} title={t.toggleTheme}>
+
+            <button
+              className="icon-button"
+              onClick={toggleTheme}
+              aria-label={t.toggleTheme}
+              title={t.toggleTheme}
+            >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
+
             <button className="share-button">{t.feedback}</button>
           </div>
         </header>
@@ -221,29 +194,64 @@ function App() {
                 <span className="welcome-orbit orbit-one" />
                 <span className="welcome-orbit orbit-two" />
               </div>
+
               <p className="eyebrow">{t.eyebrow}</p>
-              <h1>{t.headingFirst}<br /><span>{t.headingSecond}</span></h1>
+
+              <h1>
+                {t.headingFirst}
+                <br />
+                <span>{t.headingSecond}</span>
+              </h1>
+
               <p className="welcome-description">
-                {t.descriptionFirst}<br className="desktop-break" />
+                {t.descriptionFirst}
+                <br className="desktop-break" />
                 {t.descriptionSecond}
               </p>
 
               <div className="suggestion-grid">
-                <button className="suggestion-card" onClick={() => setMessage(t.suggestionBrainstorm)}>
+                <button
+                  className="suggestion-card"
+                  onClick={() => setMessage(t.suggestionBrainstorm)}
+                >
                   <span className="suggestion-icon purple">✳</span>
-                  <span><strong>{t.brainstorm}</strong><small>{t.brainstormDescription}</small></span>
+                  <span>
+                    <strong>{t.brainstorm}</strong>
+                    <small>{t.brainstormDescription}</small>
+                  </span>
                 </button>
-                <button className="suggestion-card" onClick={() => setMessage(t.suggestionLearn)}>
+
+                <button
+                  className="suggestion-card"
+                  onClick={() => setMessage(t.suggestionLearn)}
+                >
                   <span className="suggestion-icon orange">⌘</span>
-                  <span><strong>{t.learn}</strong><small>{t.learnDescription}</small></span>
+                  <span>
+                    <strong>{t.learn}</strong>
+                    <small>{t.learnDescription}</small>
+                  </span>
                 </button>
-                <button className="suggestion-card" onClick={() => setMessage(t.suggestionCode)}>
+
+                <button
+                  className="suggestion-card"
+                  onClick={() => setMessage(t.suggestionCode)}
+                >
                   <span className="suggestion-icon blue">〈/〉</span>
-                  <span><strong>{t.code}</strong><small>{t.codeDescription}</small></span>
+                  <span>
+                    <strong>{t.code}</strong>
+                    <small>{t.codeDescription}</small>
+                  </span>
                 </button>
-                <button className="suggestion-card" onClick={() => setMessage(t.suggestionPlan)}>
+
+                <button
+                  className="suggestion-card"
+                  onClick={() => setMessage(t.suggestionPlan)}
+                >
                   <span className="suggestion-icon green">↗</span>
-                  <span><strong>{t.plan}</strong><small>{t.planDescriptionCard}</small></span>
+                  <span>
+                    <strong>{t.plan}</strong>
+                    <small>{t.planDescriptionCard}</small>
+                  </span>
                 </button>
               </div>
             </div>
@@ -255,8 +263,11 @@ function App() {
                   <p>{item.text}</p>
                 </div>
               ))}
+
               <div className="assistant-placeholder">
-                <span className="assistant-avatar"><Bot size={18} /></span>
+                <span className="assistant-avatar">
+                  <Bot size={18} />
+                </span>
                 <p>{t.apiPlaceholder}</p>
               </div>
             </div>
@@ -278,18 +289,31 @@ function App() {
               rows={1}
               aria-label={t.writeMessage}
             />
+
             <div className="composer-footer">
               <div className="composer-tools">
-                <button type="button" className="composer-tool" aria-label={t.attach} title={t.attach}>
+                <button
+                  type="button"
+                  className="composer-tool"
+                  aria-label={t.attach}
+                  title={t.attach}
+                >
                   <Paperclip size={17} />
                 </button>
                 <span className="composer-hint">{t.hint}</span>
               </div>
-              <button type="submit" className="send-button" disabled={!message.trim()} aria-label={t.writeMessage}>
+
+              <button
+                type="submit"
+                className="send-button"
+                disabled={!message.trim()}
+                aria-label={t.writeMessage}
+              >
                 <Send size={17} />
               </button>
             </div>
           </form>
+
           <p className="disclaimer">{t.disclaimer}</p>
         </div>
       </section>
