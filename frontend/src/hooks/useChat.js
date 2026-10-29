@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 
 const STORAGE_KEY = 'nova-conversations'
+const ACTIVE_CHAT_KEY = 'nova-active-conversation'
+const OLD_MESSAGES_KEY = 'nova-messages'
 
 function createConversation() {
   return {
@@ -11,47 +13,62 @@ function createConversation() {
   }
 }
 
-function useChat() {
-  const [conversations, setConversations] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
+function readStorage(key, fallback = null) {
+  try {
+    const value = localStorage.getItem(key)
+    return value === null ? fallback : value
+  } catch {
+    return fallback
+  }
+}
 
-      if (saved) {
-        const parsed = JSON.parse(saved)
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, value)
+  } catch {
+    return false
+  }
 
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed
-        }
+  return true
+}
+
+function loadConversations() {
+  try {
+    const saved = readStorage(STORAGE_KEY)
+
+    if (saved) {
+      const parsed = JSON.parse(saved)
+
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed
       }
-
-      const oldMessages = JSON.parse(
-        localStorage.getItem('nova-messages') || '[]'
-      )
-
-      if (Array.isArray(oldMessages) && oldMessages.length > 0) {
-        return [
-          {
-            ...createConversation(),
-            title: oldMessages[0].text.slice(0, 30) || 'New Chat',
-            messages: oldMessages,
-          },
-        ]
-      }
-
-      return [createConversation()]
-    } catch {
-      return [createConversation()]
     }
-  })
+
+    const oldMessages = JSON.parse(
+      readStorage(OLD_MESSAGES_KEY, '[]')
+    )
+
+    if (Array.isArray(oldMessages) && oldMessages.length > 0) {
+      return [
+        {
+          ...createConversation(),
+          title: oldMessages[0]?.text?.slice(0, 30) || 'New Chat',
+          messages: oldMessages,
+        },
+      ]
+    }
+  } catch {
+    return [createConversation()]
+  }
+
+  return [createConversation()]
+}
+
+function useChat() {
+  const [conversations, setConversations] = useState(loadConversations)
 
   const [activeConversationId, setActiveConversationId] = useState(
-    () => {
-      try {
-        return localStorage.getItem('nova-active-conversation') || null
-      } catch {
-        return null
-      }
-    }
+    () => readStorage(ACTIVE_CHAT_KEY)
   )
 
   const [message, setMessage] = useState('')
@@ -61,20 +78,17 @@ function useChat() {
       (conversation) => conversation.id === activeConversationId
     ) || conversations[0]
 
+  const messages = activeConversation?.messages || []
+
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations))
+    writeStorage(STORAGE_KEY, JSON.stringify(conversations))
   }, [conversations])
 
   useEffect(() => {
     if (activeConversation) {
-      localStorage.setItem(
-        'nova-active-conversation',
-        activeConversation.id
-      )
+      writeStorage(ACTIVE_CHAT_KEY, activeConversation.id)
     }
   }, [activeConversation])
-
-  const messages = activeConversation?.messages || []
 
   function handleSend(e) {
     e.preventDefault()
