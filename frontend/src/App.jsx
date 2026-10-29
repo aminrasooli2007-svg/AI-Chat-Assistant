@@ -24,15 +24,24 @@ function App() {
     message,
     setMessage,
     messages,
+    conversations,
+    activeConversationId,
     handleSend,
+    createNewChat,
+    selectConversation,
+    deleteConversation,
     deleteMessage,
-    clearChat,
   } = useChat()
 
   const t = translations[language]
 
   function startNewChat() {
-    clearChat()
+    createNewChat()
+    setSidebarOpen(false)
+  }
+
+  function handleSelectConversation(conversationId) {
+    selectConversation(conversationId)
     setSidebarOpen(false)
   }
 
@@ -49,8 +58,11 @@ function App() {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         messages={messages}
+        conversations={conversations}
+        activeConversationId={activeConversationId}
         onNewChat={startNewChat}
-        onDeleteMessage={deleteMessage}
+        onSelectConversation={handleSelectConversation}
+        onDeleteConversation={deleteConversation}
       />
 
       <section className="chat-panel">
@@ -66,6 +78,7 @@ function App() {
           messages={messages}
           t={t}
           onSelectSuggestion={setMessage}
+          onDeleteMessage={deleteMessage}
         />
 
         <Composer

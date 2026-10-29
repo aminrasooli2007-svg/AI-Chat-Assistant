@@ -11,9 +11,11 @@ function Sidebar({
   t,
   sidebarOpen,
   setSidebarOpen,
-  messages,
+  conversations,
+  activeConversationId,
   onNewChat,
-  onDeleteMessage,
+  onSelectConversation,
+  onDeleteConversation,
 }) {
   return (
     <>
@@ -62,19 +64,34 @@ function Sidebar({
         <div className="history-section">
           <p className="section-label">{t.recent}</p>
 
-          {messages.length === 0 ? (
+          {conversations.length === 0 ? (
             <p className="empty-history">{t.emptyHistory}</p>
           ) : (
-            messages.map((item) => (
-              <div className="history-item" key={item.id}>
-                <MessageSquare size={16} />
-                <span>{item.text}</span>
+            conversations.map((conversation) => (
+              <div
+                className={`history-item ${
+                  conversation.id === activeConversationId ? 'active' : ''
+                }`}
+                key={conversation.id}
+              >
                 <button
                   type="button"
-                  className="icon-button"
-                  aria-label={`Delete message: ${item.text}`}
-                  title="Delete message"
-                  onClick={() => onDeleteMessage(item.id)}
+                  className="history-select"
+                  onClick={() => onSelectConversation(conversation.id)}
+                  title={conversation.title}
+                >
+                  <MessageSquare size={16} />
+                  <span>
+                    {conversation.title || t.newChat}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  className="icon-button history-delete"
+                  aria-label={`Delete conversation: ${conversation.title}`}
+                  title="Delete conversation"
+                  onClick={() => onDeleteConversation(conversation.id)}
                 >
                   <Trash2 size={15} />
                 </button>
