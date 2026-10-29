@@ -3,9 +3,8 @@ import { useState } from 'react'
 import { translations } from './data/translations'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
-import Welcome from './components/Welcome'
-import MessageList from './components/MessageList'
 import Composer from './components/Composer'
+import ChatContent from './components/ChatContent'
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('nova-theme') || 'dark')
@@ -80,13 +79,11 @@ function App() {
           onOpenSidebar={() => setSidebarOpen(true)}
         />
 
-        <div className="chat-content">
-          {messages.length === 0 ? (
-            <Welcome t={t} onSelectSuggestion={setMessage} />
-          ) : (
-            <MessageList messages={messages} t={t} />
-          )}
-        </div>
+        <ChatContent
+          messages={messages}
+          t={t}
+          onSelectSuggestion={setMessage}
+        />
 
         <Composer
           message={message}
