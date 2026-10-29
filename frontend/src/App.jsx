@@ -7,11 +7,18 @@ import Composer from './components/Composer'
 import ChatContent from './components/ChatContent'
 import BackgroundEffects from './components/BackgroundEffects'
 import useChat from './hooks/useChat'
+import usePreferences from './hooks/usePreferences'
 
 function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem('nova-theme') || 'dark')
-  const [language, setLanguage] = useState(() => localStorage.getItem('nova-language') || 'en')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const {
+    language,
+    isDark,
+    isPersian,
+    toggleTheme,
+    toggleLanguage,
+  } = usePreferences()
 
   const {
     message,
@@ -21,21 +28,7 @@ function App() {
     clearChat,
   } = useChat()
 
-  const isDark = theme === 'dark'
-  const isPersian = language === 'fa'
   const t = translations[language]
-
-  function toggleTheme() {
-    const nextTheme = isDark ? 'light' : 'dark'
-    setTheme(nextTheme)
-    localStorage.setItem('nova-theme', nextTheme)
-  }
-
-  function toggleLanguage() {
-    const nextLanguage = isPersian ? 'en' : 'fa'
-    setLanguage(nextLanguage)
-    localStorage.setItem('nova-language', nextLanguage)
-  }
 
   function startNewChat() {
     clearChat()
