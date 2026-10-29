@@ -7,7 +7,10 @@ function MessageList({ messages, t }) {
       {messages.map((item) => (
         <div className="message-row" key={item.id}>
           <span className="message-avatar">A</span>
-          <p>{item.text}</p>
+
+          <div className="message-body">
+            <p>{item.text}</p>
+          </div>
         </div>
       ))}
 

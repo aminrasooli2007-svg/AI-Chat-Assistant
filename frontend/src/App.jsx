@@ -30,7 +30,6 @@ function App() {
     createNewChat,
     selectConversation,
     deleteConversation,
-    deleteMessage,
   } = useChat()
 
   const t = translations[language]
@@ -78,7 +77,6 @@ function App() {
           messages={messages}
           t={t}
           onSelectSuggestion={setMessage}
-          onDeleteMessage={deleteMessage}
         />
 
         <Composer

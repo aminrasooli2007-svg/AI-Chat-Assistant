@@ -233,6 +233,9 @@ button:disabled {
 }
 
 .history-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   margin-top: 33px;
 }
 
@@ -243,10 +246,83 @@ button:disabled {
   line-height: 1.7;
 }
 
-.history-item span {
+.history-section .section-label {
+  flex: 0 0 auto;
+}
+
+.history-section > .history-item {
+  flex: 0 0 auto;
+}
+
+.history-item {
+  gap: 7px;
+  min-width: 0;
+  padding: 3px 5px 3px 8px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.history-item.active {
+  border-color: rgba(155, 138, 255, 0.2);
+  color: var(--accent);
+  background: rgba(130, 105, 255, 0.1);
+}
+
+.history-select {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 32px;
+  padding: 0 3px;
+  overflow: hidden;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  font-size: 12px;
+}
+
+.history-select svg {
+  flex: 0 0 auto;
+}
+
+.history-select span {
+  display: block;
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.history-select:hover {
+  color: var(--text);
+}
+
+.history-delete {
+  width: 29px;
+  height: 29px;
+  opacity: 0;
+  visibility: hidden;
+  color: var(--muted);
+  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.history-item:hover .history-delete,
+.history-item:focus-within .history-delete {
+  opacity: 1;
+  visibility: visible;
+}
+
+.history-delete:hover {
+  color: #ff777f;
+  background: rgba(255, 90, 100, 0.1);
+}
+
+.history-item.active .history-select {
+  color: var(--accent);
 }
 
 .sidebar-bottom {
@@ -729,6 +805,121 @@ button:disabled {
   display: none;
 }
 
+/* Custom conversation deletion dialog */
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(5, 5, 12, 0.65);
+  backdrop-filter: blur(7px);
+  animation: confirm-fade-in 0.18s ease both;
+}
+
+.confirm-dialog {
+  width: 100%;
+  max-width: 410px;
+  padding: 25px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text);
+  background: var(--panel);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.3);
+  animation: confirm-dialog-in 0.22s ease both;
+}
+
+.confirm-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 20px;
+  place-items: center;
+  border: 1px solid rgba(255, 100, 110, 0.2);
+  border-radius: 15px;
+  color: #ff737d;
+  background: rgba(255, 100, 110, 0.1);
+}
+
+.confirm-dialog h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.confirm-dialog p {
+  margin: 12px 0 25px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirm-cancel,
+.confirm-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.confirm-cancel {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.confirm-cancel:hover {
+  background: var(--surface-hover);
+}
+
+.confirm-delete {
+  border-color: transparent;
+  color: white;
+  background: #d94756;
+}
+
+.confirm-delete:hover {
+  transform: translateY(-1px);
+  background: #c93748;
+}
+
+@keyframes confirm-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes confirm-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @keyframes ambient-float {
   from {
     transform: translate3d(-10px, 0, 0) scale(0.95);
@@ -939,6 +1130,28 @@ button:disabled {
   .assistant-placeholder p {
     font-size: 13px;
   }
+
+  .history-item {
+    min-height: 40px;
+  }
+
+  .history-delete {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .confirm-dialog {
+    padding: 20px;
+  }
+
+  .confirm-actions {
+    flex-direction: column-reverse;
+  }
+
+  .confirm-cancel,
+  .confirm-delete {
+    width: 100%;
+  }
 }
 
 @media (max-width: 360px) {
@@ -964,6 +1177,13 @@ button:disabled {
   .composer-area {
     padding-right: 8px;
     padding-left: 8px;
+  }
+}
+
+@media (hover: none) {
+  .history-delete {
+    opacity: 1;
+    visibility: visible;
   }
 }
 

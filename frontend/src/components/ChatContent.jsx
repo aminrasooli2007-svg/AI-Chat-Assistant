@@ -6,9 +6,15 @@ function ChatContent({ messages, t, onSelectSuggestion }) {
   return (
     <div className="chat-content">
       {messages.length === 0 ? (
-        <Welcome t={t} onSelectSuggestion={onSelectSuggestion} />
+        <Welcome
+          t={t}
+          onSelectSuggestion={onSelectSuggestion}
+        />
       ) : (
-        <MessageList messages={messages} t={t} />
+        <MessageList
+          messages={messages}
+          t={t}
+        />
       )}
     </div>
   )

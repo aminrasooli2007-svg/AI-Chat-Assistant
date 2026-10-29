@@ -1,10 +1,12 @@
 
+import { useState } from 'react'
 import {
   Bot,
   Plus,
   MessageSquare,
   X,
   Trash2,
+  AlertTriangle,
 } from 'lucide-react'
 
 function Sidebar({
@@ -17,6 +19,19 @@ function Sidebar({
   onSelectConversation,
   onDeleteConversation,
 }) {
+  const [conversationToDelete, setConversationToDelete] = useState(null)
+
+  function handleConfirmDelete() {
+    if (!conversationToDelete) return
+
+    onDeleteConversation(conversationToDelete.id)
+    setConversationToDelete(null)
+  }
+
+  function handleCancelDelete() {
+    setConversationToDelete(null)
+  }
+
   return (
     <>
       {sidebarOpen && (
@@ -81,9 +96,7 @@ function Sidebar({
                   title={conversation.title}
                 >
                   <MessageSquare size={16} />
-                  <span>
-                    {conversation.title || t.newChat}
-                  </span>
+                  <span>{conversation.title || t.newChat}</span>
                 </button>
 
                 <button
@@ -91,7 +104,7 @@ function Sidebar({
                   className="icon-button history-delete"
                   aria-label={`Delete conversation: ${conversation.title}`}
                   title="Delete conversation"
-                  onClick={() => onDeleteConversation(conversation.id)}
+                  onClick={() => setConversationToDelete(conversation)}
                 >
                   <Trash2 size={15} />
                 </button>
@@ -119,6 +132,56 @@ function Sidebar({
           </button>
         </div>
       </aside>
+
+      {conversationToDelete && (
+        <div
+          className="confirm-overlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              handleCancelDelete()
+            }
+          }}
+        >
+          <section
+            className="confirm-dialog"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="confirm-delete-title"
+            aria-describedby="confirm-delete-description"
+          >
+            <div className="confirm-icon">
+              <AlertTriangle size={25} />
+            </div>
+
+            <h2 id="confirm-delete-title">Delete conversation?</h2>
+
+            <p id="confirm-delete-description">
+              Are you sure you want to delete "{conversationToDelete.title || t.newChat}"?
+              This action cannot be undone.
+            </p>
+
+            <div className="confirm-actions">
+              <button
+                type="button"
+                className="confirm-cancel"
+                onClick={handleCancelDelete}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="confirm-delete"
+                onClick={handleConfirmDelete}
+                autoFocus
+              >
+                <Trash2 size={16} />
+                Delete conversation
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </>
   )
 }
