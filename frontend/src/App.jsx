@@ -6,13 +6,20 @@ import Topbar from './components/Topbar'
 import Composer from './components/Composer'
 import ChatContent from './components/ChatContent'
 import BackgroundEffects from './components/BackgroundEffects'
+import useChat from './hooks/useChat'
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('nova-theme') || 'dark')
   const [language, setLanguage] = useState(() => localStorage.getItem('nova-language') || 'en')
-  const [message, setMessage] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [messages, setMessages] = useState([])
+
+  const {
+    message,
+    setMessage,
+    messages,
+    handleSend,
+    clearChat,
+  } = useChat()
 
   const isDark = theme === 'dark'
   const isPersian = language === 'fa'
@@ -30,27 +37,8 @@ function App() {
     localStorage.setItem('nova-language', nextLanguage)
   }
 
-  function handleSend(e) {
-    e.preventDefault()
-
-    const trimmedMessage = message.trim()
-
-    if (!trimmedMessage) return
-
-    setMessages((current) => [
-      ...current,
-      {
-        id: `${Date.now()}-${current.length}`,
-        text: trimmedMessage,
-      },
-    ])
-
-    setMessage('')
-  }
-
   function startNewChat() {
-    setMessages([])
-    setMessage('')
+    clearChat()
     setSidebarOpen(false)
   }
 
