@@ -25,6 +25,7 @@ function App() {
     setMessage,
     messages,
     handleSend,
+    deleteMessage,
     clearChat,
   } = useChat()
 
@@ -49,6 +50,7 @@ function App() {
         setSidebarOpen={setSidebarOpen}
         messages={messages}
         onNewChat={startNewChat}
+        onDeleteMessage={deleteMessage}
       />
 
       <section className="chat-panel">

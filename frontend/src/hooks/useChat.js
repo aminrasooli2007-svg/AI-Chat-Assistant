@@ -34,6 +34,12 @@ function useChat() {
     setMessage('')
   }
 
+  function deleteMessage(messageId) {
+    setMessages((current) =>
+      current.filter((item) => item.id !== messageId)
+    )
+  }
+
   function clearChat() {
     setMessages([])
     setMessage('')
@@ -44,6 +50,7 @@ function useChat() {
     setMessage,
     messages,
     handleSend,
+    deleteMessage,
     clearChat,
   }
 }

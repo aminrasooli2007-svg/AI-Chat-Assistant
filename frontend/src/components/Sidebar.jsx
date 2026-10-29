@@ -4,6 +4,7 @@ import {
   Plus,
   MessageSquare,
   X,
+  Trash2,
 } from 'lucide-react'
 
 function Sidebar({
@@ -12,6 +13,7 @@ function Sidebar({
   setSidebarOpen,
   messages,
   onNewChat,
+  onDeleteMessage,
 }) {
   return (
     <>
@@ -67,6 +69,15 @@ function Sidebar({
               <div className="history-item" key={item.id}>
                 <MessageSquare size={16} />
                 <span>{item.text}</span>
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label={`Delete message: ${item.text}`}
+                  title="Delete message"
+                  onClick={() => onDeleteMessage(item.id)}
+                >
+                  <Trash2 size={15} />
+                </button>
               </div>
             ))
           )}
