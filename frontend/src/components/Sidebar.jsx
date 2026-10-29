@@ -4,7 +4,6 @@ import {
   Plus,
   MessageSquare,
   X,
-  Menu,
 } from 'lucide-react'
 
 function Sidebar({
@@ -64,10 +63,12 @@ function Sidebar({
           {messages.length === 0 ? (
             <p className="empty-history">{t.emptyHistory}</p>
           ) : (
-            <button className="history-item">
-              <MessageSquare size={16} />
-              <span>{messages[0].text.slice(0, 24) || t.newChat}</span>
-            </button>
+            messages.map((item) => (
+              <div className="history-item" key={item.id}>
+                <MessageSquare size={16} />
+                <span>{item.text}</span>
+              </div>
+            ))
           )}
         </div>
 
