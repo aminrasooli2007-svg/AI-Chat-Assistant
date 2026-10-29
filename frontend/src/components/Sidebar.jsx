@@ -7,6 +7,7 @@ import {
   X,
   Trash2,
   AlertTriangle,
+  Search,
 } from 'lucide-react'
 
 function Sidebar({
@@ -20,6 +21,13 @@ function Sidebar({
   onDeleteConversation,
 }) {
   const [conversationToDelete, setConversationToDelete] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredConversations = conversations.filter((conversation) =>
+    (conversation.title || t.newChat)
+      .toLowerCase()
+      .includes(searchQuery.trim().toLowerCase())
+  )
 
   function handleConfirmDelete() {
     if (!conversationToDelete) return
@@ -68,6 +76,17 @@ function Sidebar({
           <span className="shortcut">⌘ K</span>
         </button>
 
+        <div className="conversation-search">
+          <Search size={17} />
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search conversations..."
+            aria-label="Search conversations"
+          />
+        </div>
+
         <div className="sidebar-section">
           <p className="section-label">{t.workspace}</p>
           <button className="nav-item active">
@@ -81,8 +100,12 @@ function Sidebar({
 
           {conversations.length === 0 ? (
             <p className="empty-history">{t.emptyHistory}</p>
+          ) : filteredConversations.length === 0 ? (
+            <p className="empty-history">
+              No conversations found.
+            </p>
           ) : (
-            conversations.map((conversation) => (
+            filteredConversations.map((conversation) => (
               <div
                 className={`history-item ${
                   conversation.id === activeConversationId ? 'active' : ''

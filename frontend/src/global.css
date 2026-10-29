@@ -1197,3 +1197,45 @@ button:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+
+.conversation-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 22px;
+  padding: 0 12px;
+  min-height: 42px;
+  border: 1px solid var(--border-color, rgba(128, 128, 128, 0.2));
+  border-radius: 12px;
+  background: var(--input-bg, rgba(128, 128, 128, 0.06));
+  color: var(--text-secondary, #888);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.conversation-search:focus-within {
+  border-color: #4033c3;
+  box-shadow: 0 0 0 3px rgba(64, 51, 195, 0.12);
+}
+
+.conversation-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+}
+
+.conversation-search input::placeholder {
+  color: var(--text-secondary, #888);
+  opacity: 0.8;
+}
+
+.conversation-search input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
