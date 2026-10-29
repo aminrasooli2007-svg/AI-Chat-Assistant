@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import Composer from './components/Composer'
 import ChatContent from './components/ChatContent'
+import BackgroundEffects from './components/BackgroundEffects'
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('nova-theme') || 'dark')
@@ -59,8 +60,7 @@ function App() {
       dir={isPersian ? 'rtl' : 'ltr'}
       lang={language}
     >
-      <div className="ambient ambient-one" />
-      <div className="ambient ambient-two" />
+      <BackgroundEffects />
 
       <Sidebar
         t={t}
