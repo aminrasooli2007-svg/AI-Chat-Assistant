@@ -1,7 +1,6 @@
-
 import { Bot } from 'lucide-react'
 
-function MessageList({ messages, t }) {
+function MessageList({ messages, t, isLoading }) {
   return (
     <div className="messages-list">
       {messages.map((item) => (
@@ -18,6 +17,20 @@ function MessageList({ messages, t }) {
           </div>
         </div>
       ))}
+
+      {isLoading && (
+        <div className="message-row assistant-message">
+          <span className="message-avatar">
+            <Bot size={18} />
+          </span>
+
+          <div className="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

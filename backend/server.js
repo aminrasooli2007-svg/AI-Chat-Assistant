@@ -1,4 +1,3 @@
-
 const express = require('express')
 const cors = require('cors')
 
@@ -12,7 +11,7 @@ app.get('/', (req, res) => {
   res.send('AI Chat Assistant Backend is running!')
 })
 
-app.post('/api/chat', (req, res) => {
+app.post('/api/chat', async (req, res) => {
   const { message } = req.body
 
   if (!message || typeof message !== 'string' || !message.trim()) {
@@ -20,6 +19,8 @@ app.post('/api/chat', (req, res) => {
       error: 'Message is required.'
     })
   }
+
+  await new Promise((resolve) => setTimeout(resolve, 1000))
 
   const reply = `Hello! You said: ${message.trim()}`
 

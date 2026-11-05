@@ -1,11 +1,14 @@
 
-import { Send, Paperclip } from 'lucide-react'
+import { Send, Paperclip, LoaderCircle } from 'lucide-react'
 
-function Composer({ message, setMessage, onSend, t }) {
+function Composer({ message, setMessage, onSend, t, isLoading }) {
   function handleKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      onSend(e)
+
+      if (!isLoading) {
+        onSend(e)
+      }
     }
   }
 
@@ -19,6 +22,7 @@ function Composer({ message, setMessage, onSend, t }) {
           placeholder={t.placeholder}
           rows={1}
           aria-label={t.writeMessage}
+          disabled={isLoading}
         />
 
         <div className="composer-footer">
@@ -37,10 +41,14 @@ function Composer({ message, setMessage, onSend, t }) {
           <button
             type="submit"
             className="send-button"
-            disabled={!message.trim()}
+            disabled={!message.trim() || isLoading}
             aria-label={t.writeMessage}
           >
-            <Send size={17} />
+            {isLoading ? (
+              <LoaderCircle size={17} className="loading-icon" />
+            ) : (
+              <Send size={17} />
+            )}
           </button>
         </div>
       </form>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { translations } from './data/translations'
 import Sidebar from './components/Sidebar'
@@ -26,6 +25,7 @@ function App() {
     messages,
     conversations,
     activeConversationId,
+    isLoading,
     handleSend,
     createNewChat,
     selectConversation,
@@ -77,6 +77,7 @@ function App() {
           messages={messages}
           t={t}
           onSelectSuggestion={setMessage}
+          isLoading={isLoading}
         />
 
         <Composer
@@ -84,6 +85,7 @@ function App() {
           setMessage={setMessage}
           onSend={handleSend}
           t={t}
+          isLoading={isLoading}
         />
       </section>
     </main>

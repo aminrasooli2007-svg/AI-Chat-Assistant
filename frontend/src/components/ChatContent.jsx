@@ -1,8 +1,7 @@
-
 import Welcome from './Welcome'
 import MessageList from './MessageList'
 
-function ChatContent({ messages, t, onSelectSuggestion }) {
+function ChatContent({ messages, t, onSelectSuggestion, isLoading }) {
   return (
     <div className="chat-content">
       {messages.length === 0 ? (
@@ -14,6 +13,7 @@ function ChatContent({ messages, t, onSelectSuggestion }) {
         <MessageList
           messages={messages}
           t={t}
+          isLoading={isLoading}
         />
       )}
     </div>
