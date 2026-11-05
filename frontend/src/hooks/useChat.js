@@ -72,6 +72,7 @@ function useChat() {
   )
 
   const [message, setMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const activeConversation =
     conversations.find(
@@ -90,39 +91,95 @@ function useChat() {
     }
   }, [activeConversation])
 
-  function handleSend(e) {
+  async function handleSend(e) {
     e.preventDefault()
 
     const trimmedMessage = message.trim()
 
-    if (!trimmedMessage || !activeConversation) return
+    if (!trimmedMessage || !activeConversation || isLoading) return
+
+    const conversationId = activeConversation.id
+
+    const userMessage = {
+      id: `${Date.now()}-user`,
+      role: 'user',
+      text: trimmedMessage,
+    }
 
     setConversations((current) =>
-      current.map((conversation) => {
-        if (conversation.id !== activeConversation.id) {
-          return conversation
-        }
-
-        const updatedMessages = [
-          ...conversation.messages,
-          {
-            id: `${Date.now()}-${conversation.messages.length}`,
-            text: trimmedMessage,
-          },
-        ]
-
-        return {
-          ...conversation,
-          title:
-            conversation.messages.length === 0
-              ? trimmedMessage.slice(0, 30)
-              : conversation.title,
-          messages: updatedMessages,
-        }
-      })
+      current.map((conversation) =>
+        conversation.id === conversationId
+          ? {
+              ...conversation,
+              title:
+                conversation.messages.length === 0
+                  ? trimmedMessage.slice(0, 30)
+                  : conversation.title,
+              messages: [...conversation.messages, userMessage],
+            }
+          : conversation
+      )
     )
 
     setMessage('')
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('http://localhost:5000/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: trimmedMessage,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong.')
+      }
+
+      const assistantMessage = {
+        id: `${Date.now()}-assistant`,
+        role: 'assistant',
+        text: data.reply,
+      }
+
+      setConversations((current) =>
+        current.map((conversation) =>
+          conversation.id === conversationId
+            ? {
+                ...conversation,
+                messages: [...conversation.messages, assistantMessage],
+              }
+            : conversation
+        )
+      )
+    } catch (error) {
+      console.error('Chat error:', error)
+
+      setConversations((current) =>
+        current.map((conversation) =>
+          conversation.id === conversationId
+            ? {
+                ...conversation,
+                messages: [
+                  ...conversation.messages,
+                  {
+                    id: `${Date.now()}-error`,
+                    role: 'assistant',
+                    text: 'Sorry, something went wrong. Please try again.',
+                  },
+                ],
+              }
+            : conversation
+        )
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   function createNewChat() {
@@ -197,6 +254,7 @@ function useChat() {
     messages,
     conversations,
     activeConversationId: activeConversation?.id,
+    isLoading,
     handleSend,
     createNewChat,
     selectConversation,
